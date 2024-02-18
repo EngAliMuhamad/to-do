@@ -1,0 +1,20 @@
+{
+"task_list" : "Task List",
+"settings" : "Settings",
+"add_new_task" : "Add New Task",
+"enter_your_task" : "Enter Your Task",
+"enter_task_description" : "Enter Task Description",
+"select_date" : "Select Date",
+"add" : "Add",
+"to_do_list" : "To Do List",
+"please_enter_task" : "Please Enter Task",
+"please_enter_description" : "please Enter Description",
+"language" : "Language",
+"english" : "English",
+"arabic" : "Arabic",
+"mode" : "Mode",
+"light" : "light",
+"dark" : "dark",
+"task" : "Task",
+"description" :"Description"
+}

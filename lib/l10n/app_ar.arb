@@ -1,0 +1,20 @@
+{
+"task_list" : "قائمة المهام",
+"settings" : "الاعدادات",
+"add_new_task" : "اضافة مهمه",
+"enter_your_task" : "ادخل مهمتك",
+"enter_task_description" : "ادخل الوصف",
+"select_date" : "التاريخ",
+"add" : "اضافه",
+"to_do_list" : "لائحة المهام",
+"please_enter_task" : "من فضلك ادخل المهمه اولا ",
+"please_enter_description" : "من فضلك ادخل الوصف",
+"language" : "اللغه",
+"english" : "الانجليزيه",
+"arabic" : "العربيه",
+"mode" : "النمط",
+"light" : "مضىء",
+"dark" : "مظلم",
+"task" : "المهمه",
+"description":"الوصف"
+}
