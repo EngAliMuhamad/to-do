@@ -1,23 +1,40 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:to_do/firebase_utils.dart';
 import 'package:to_do/home/task_list/task_list_item.dart';
 import 'package:to_do/my_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do/provider/app_config_provider.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
-class TaskListTab extends StatelessWidget {
+
+import '../../model/task.dart';
+class TaskListTab extends StatefulWidget {
+  @override
+  State<TaskListTab> createState() => _TaskListTabState();
+}
+
+class _TaskListTabState extends State<TaskListTab> {
+
+
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<AppConfigProvider>(context);
+    var appconfigprovider = Provider.of<AppConfigProvider>(context);
+    if(appconfigprovider.taskList.isEmpty){
+      appconfigprovider. getAllTasksFireStore();
+    }
+
     return Container(
         child: Column(
             children: [
               Container(
                 color: MyTheme.whiteColor,
                 child:EasyDateTimeLine(
-                  initialDate: DateTime.now(),
-                  onDateChange: (selectedDate) {
+                  initialDate: appconfigprovider.selectedData,
+                  onDateChange: (date) {
+                    appconfigprovider.changsesSelectedDate(date);
                     //`selectedDate` the new date selected.
                   },
+
                   headerProps: const EasyHeaderProps(
                     monthPickerType: MonthPickerType.switcher,
                     dateFormatter: DateFormatter.fullDateDMY(),
@@ -38,7 +55,7 @@ class TaskListTab extends StatelessWidget {
                       ),
                     ),
                   ),
-                  locale: provider.appLanguage,
+                  locale: appconfigprovider.appLanguage,
                 )
                 // CalendarTimeline(
                 //   initialDate: DateTime.now(),
@@ -58,14 +75,16 @@ class TaskListTab extends StatelessWidget {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemBuilder: (context,int){
-                    return TaskListItem();
+                  itemBuilder: (context,index){
+                    return TaskListItem(task:appconfigprovider.taskList [index],);
                   },
-                  itemCount: 30,
+                  itemCount: appconfigprovider.taskList.length,
                 ),
               )
             ],
             ),
         );
     }
+
 }
+

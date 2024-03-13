@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:to_do/firebase_utils.dart';
+import 'package:to_do/model/task.dart';
 import 'package:to_do/my_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do/provider/app_config_provider.dart';
@@ -13,11 +15,12 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   var formKey =GlobalKey<FormState>();
   String title = '' ;
   String description = '' ;
+  late AppConfigProvider appConfigProvider;
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<AppConfigProvider>(context);
+     appConfigProvider = Provider.of<AppConfigProvider>(context);//provider
     return Container(
-      color: provider.isDarkMode()?
+      color: appConfigProvider.isDarkMode()?//provider
       MyTheme.blackColor
           :
       MyTheme.whiteColor
@@ -44,14 +47,14 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                     decoration: InputDecoration(
                         hintText: AppLocalizations.of(context)!.enter_your_task,
                         hintStyle: TextStyle(
-                            color: provider.isDarkMode()?
+                            color: appConfigProvider.isDarkMode()?
                             MyTheme.whiteColor
                                 :
                             MyTheme.blackColor
                         ),
                         enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                                color: provider.isDarkMode()?
+                                color: appConfigProvider.isDarkMode()?
                                 MyTheme.whiteColor
                                     :
                                 MyTheme.blackColor
@@ -59,7 +62,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                         )
                     ),
                     style: TextStyle(
-                        color: provider.isDarkMode()?
+                        color: appConfigProvider.isDarkMode()?
                         MyTheme.whiteColor
                             :
                         MyTheme.blackColor
@@ -79,14 +82,14 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                     decoration: InputDecoration(
                         hintText: AppLocalizations.of(context)!.enter_task_description,
                         hintStyle: TextStyle(
-                            color: provider.isDarkMode()?
+                            color: appConfigProvider.isDarkMode()?
                             MyTheme.whiteColor
                                 :
                             MyTheme.blackColor
                         ),
                         enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                                color: provider.isDarkMode()?
+                                color: appConfigProvider.isDarkMode()?
                                 MyTheme.whiteColor
                                     :
                                 MyTheme.blackColor
@@ -95,7 +98,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                     ),
                     maxLines: 2,
                     style: TextStyle(
-                        color: provider.isDarkMode()?
+                        color: appConfigProvider.isDarkMode()?
                         MyTheme.whiteColor
                             :
                         MyTheme.blackColor
@@ -103,7 +106,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   ),
                   SizedBox(height: 15,),
                   Text(AppLocalizations.of(context)!.select_date,style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: provider.isDarkMode()?
+                      color: appConfigProvider.isDarkMode()?
                       MyTheme.whiteColor
                           :
                       MyTheme.blackColor
@@ -116,7 +119,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                       child: Text('${selectedDate.day}- ${selectedDate.month}-${selectedDate.year}',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: provider.isDarkMode()?
+                            color: appConfigProvider.isDarkMode()?
                             MyTheme.whiteColor
                                 :
                             MyTheme.blackColor
@@ -150,6 +153,17 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
 
   void addTask() {
     if(formKey.currentState?.validate()==true){
+      Task task =Task(
+          title: title,
+          description: description,
+          dateTime: selectedDate);
+      FirebaseUtils.addTaskToFireStore(task).timeout(Duration(milliseconds: 500),
+      onTimeout: (){
+        print('task added successfully');
+        ///astakdem mkan el print  7aga asmaha   alert dialog ,toast,snach bar
+        appConfigProvider.getAllTasksFireStore();
+        Navigator.pop(context);
+      });
 
     }
     }

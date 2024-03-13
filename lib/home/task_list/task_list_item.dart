@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:to_do/firebase_utils.dart';
+import 'package:to_do/model/task.dart';
 import 'package:to_do/my_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do/provider/app_config_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class TaskListItem extends StatelessWidget {
+class TaskListItem extends StatefulWidget {
+  Task task;
+  TaskListItem({required this .task});
+
+  @override
+  State<TaskListItem> createState() => _TaskListItemState();
+}
+
+class _TaskListItemState extends State<TaskListItem> {
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<AppConfigProvider>(context);
+    var appconfigprovider = Provider.of<AppConfigProvider>(context);
     return Container(
         margin: EdgeInsets.all(12),
         child: Slidable(//Slidable
@@ -24,6 +34,10 @@ class TaskListItem extends StatelessWidget {
                 SlidableAction(
                   borderRadius: BorderRadius.circular(12),
                   onPressed: (context){
+                    FirebaseUtils.deleteTaskFromFireStore(widget.task).timeout(Duration(milliseconds: 500),onTimeout: (){
+                      print('task deleted successfully');
+                      appconfigprovider.getAllTasksFireStore();
+                    });
                   },
                   backgroundColor: MyTheme.redColor,
                   foregroundColor: MyTheme.whiteColor,
@@ -36,7 +50,7 @@ class TaskListItem extends StatelessWidget {
               padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: provider.isDarkMode()?
+                  color: appconfigprovider.isDarkMode()?
                   MyTheme.blackColor
                       :
                   MyTheme.whiteColor
@@ -53,12 +67,14 @@ class TaskListItem extends StatelessWidget {
                   Expanded(child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(AppLocalizations.of(context)!.task,
+                      Text(
+                        widget.task.title ?? '',//task
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: MyTheme.primaryColor
                         ),),
-                      Text(AppLocalizations.of(context)!.description,style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: provider.isDarkMode()?
+                      Text(widget.task.description ??'',//description
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: appconfigprovider.isDarkMode()?
                           MyTheme.whiteColor
                               :
                           MyTheme.blackColor
